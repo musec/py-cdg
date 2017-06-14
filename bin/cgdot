@@ -1,0 +1,33 @@
+#!/usr/bin/env python
+
+'''
+Callgraph-to-Dot processor.
+
+Converts a callgraph to a GraphViz Dot file.
+
+Usage:
+    cgdot <callgraph> [--output=<dotfile>]
+
+Options:
+    -o --output=<dotfile>    Output file (Graphviz .dot format)
+'''
+
+import cgnet
+import docopt
+import networkx
+import pygraphviz
+
+args = docopt.docopt(__doc__)
+
+cgname = args['<callgraph>']
+cgfile = open(cgname, 'r')
+
+filename = args['<dotfile>'] if '<dotfile>' in args else cgname + '.dot'
+outfile = open(filename, 'w')
+
+graph = cgnet.load(cgfile, cgname)
+
+agraph = networkx.to_agraph(graph)
+agraph.node_attr['shape'] = 'rectangle'
+agraph.node_attr['style'] = 'filled'
+agraph.write(outfile)
