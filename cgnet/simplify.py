@@ -25,8 +25,8 @@ def simplify_graph( graph ):
 
     for n in graph:
         if is_simple_node(graph, n):
-            pre = graph.predecessors(n)[0]
-            suc = graph.successors(n)[0]
+            pre = g.predecessors(n)[0]
+            suc = g.successors(n)[0]
             g.add_edge(pre, suc)
             g.remove_node(n)
 
