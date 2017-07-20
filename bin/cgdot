@@ -14,8 +14,6 @@ Options:
 
 import cgnet
 import docopt
-import networkx
-import pygraphviz
 
 args = docopt.docopt(__doc__)
 
@@ -26,8 +24,4 @@ filename = args['<dotfile>'] if '<dotfile>' in args else cgname + '.dot'
 outfile = open(filename, 'w')
 
 graph = cgnet.load(cgfile, cgname)
-
-agraph = networkx.to_agraph(graph)
-agraph.node_attr['shape'] = 'rectangle'
-agraph.node_attr['style'] = 'filled'
-agraph.write(outfile)
+graph.to_dot(outfile)

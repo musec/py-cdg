@@ -41,4 +41,14 @@ def load(stream, filename):
         for target in props['calls'] if 'calls' in props else []:
             graph.add_edge(name, target)
 
+    # Bind the `to_dot` function to this graph as an instance method
+    setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
+
     return graph
+
+
+def to_dot(graph, output):
+    agraph = networkx.to_agraph(graph)
+    agraph.node_attr['shape'] = 'rectangle'
+    agraph.node_attr['style'] = 'filled'
+    agraph.write(output)
