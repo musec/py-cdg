@@ -26,11 +26,11 @@ config = {
     'url': 'https://github.com/musec/py-cgnet',
     'download_url': 'https://github.com/musec/py-cgnet',
     'version': '0.1',
-    'install_requires': [ 'networkx', 'nose', 'pygraphviz' ],
-    'packages': [ 'cgnet' ],
-    'scripts': [ 'bin/cgdot' ],
+    'install_requires': ['networkx', 'nose', 'pygraphviz'],
+    'packages': ['cgnet'],
+    'scripts': ['bin/cgdot'],
     'test_suite': 'nose.collector',
-    'tests_require': [ 'nose' ],
+    'tests_require': ['nose'],
 }
 
 setup(**config)

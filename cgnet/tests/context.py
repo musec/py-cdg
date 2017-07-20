@@ -14,6 +14,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+file_path = os.path.join(os.path.dirname(__file__), '..')
+sys.path.insert(0, os.path.abspath(file_path))
 
 import cgnet

@@ -14,6 +14,7 @@
 
 import networkx
 
+
 def load(stream, filename):
     if filename.endswith('.json'):
         import json
@@ -22,20 +23,22 @@ def load(stream, filename):
     elif filename.endswith('.yaml'):
         import yaml
 
-        try: from yaml import CLoader as Loader
-        except ImportError: from yaml import Loader
+        try:
+            from yaml import CLoader as Loader
+        except ImportError:
+            from yaml import Loader
 
-        cg = yaml.load(stream, Loader = Loader)
+        cg = yaml.load(stream, Loader=Loader)
 
     else:
         raise ValueError, 'Unhandled file type: %s' % filename
 
-    graph = networkx.DiGraph(comment = 'Callgraph of %s' % filename)
+    graph = networkx.DiGraph(comment='Callgraph of %s' % filename)
 
     for (name, props) in cg['functions'].items():
         graph.add_node(name)
 
-        for (k,v) in props['attributes'] if 'attributes' in props else []:
+        for (k, v) in props['attributes'] if 'attributes' in props else []:
             graph.node[k] = v
 
         for target in props['calls'] if 'calls' in props else []:
