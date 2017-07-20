@@ -14,4 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from context import cgnet
+from unittest import TestCase
+
+class TestImport(TestCase):
+    def test_import(self):
+        import cgnet
