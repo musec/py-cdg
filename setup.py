@@ -20,16 +20,16 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'name': 'cgnet',
+    'name': 'cdg',
     'description': 'Software callgraph manipulation',
     'author': 'Jonathan Anderson',
     'author_email': 'jonathan.anderson@mun.ca',
-    'url': 'https://github.com/musec/py-cgnet',
-    'download_url': 'https://github.com/musec/py-cgnet',
+    'url': 'https://github.com/musec/py-cdg',
+    'download_url': 'https://github.com/musec/py-cdg',
     'version': '0.1',
     'install_requires': ['networkx', 'nose', 'pygraphviz'],
-    'packages': ['cgnet'],
-    'scripts': ['bin/cgdot'],
+    'packages': ['cdg'],
+    'scripts': ['bin/cdg-dot'],
     'test_suite': 'nose.collector',
     'tests_require': ['nose'],
 }
