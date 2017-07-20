@@ -23,6 +23,7 @@ config = {
     'name': 'cgnet',
     'description': 'Software callgraph manipulation',
     'author': 'Jonathan Anderson',
+    'author_email': 'jonathan.anderson@mun.ca',
     'url': 'https://github.com/musec/py-cgnet',
     'download_url': 'https://github.com/musec/py-cgnet',
     'version': '0.1',
