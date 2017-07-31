@@ -21,9 +21,43 @@
 #
 
 
+class _Direction:
+    Successors, Predecessors = range(2)
+
+
 def get_roots(graph):
     return [n for n, d in graph.in_degree().items() if d == 0]
 
 
 def get_leaves(graph):
     return [n for n, d in graph.out_degree().items() if d == 0]
+
+
+def successors_by_generations(graph, node, generations):
+    return _neighbours_by_generations(graph, node, generations,
+                                      _Direction.Successors)
+
+
+def predecessors_by_generations(graph, node, generations):
+    return _neighbours_by_generations(graph, node, generations,
+                                      _Direction.Predecessors)
+
+
+def _neighbours_by_generations(graph, node, generations, direction):
+    succ = []
+    current_gen = []
+    current_gen.append(node)
+
+    for x in range(0, generations):
+        next_gen = []
+        for y in current_gen:
+            s = []
+            if direction == _Direction.Successors:
+                s = graph.successors(y)
+            elif direction == _Direction.Predecessors:
+                s = graph.predecessors(y)
+            succ.extend(s)
+            next_gen.extend(s)
+        current_gen = next_gen
+
+    return succ
