@@ -22,6 +22,7 @@
 
 import networkx as nx
 
+
 def is_simple_node(graph, node):
     """A node is "Simple" if none of the following is true
     - it has multiple inputs (it joins chains together)
@@ -33,6 +34,7 @@ def is_simple_node(graph, node):
     node -- A networkx DiGraph Node
     """
     return graph.in_degree(node) == 1 and graph.out_degree(node) == 1
+
 
 def simplified(graph):
     """Simplify a CallGraph by coalescing call chains and dropping
