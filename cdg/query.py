@@ -44,7 +44,7 @@ def predecessors_by_generations(graph, node, generations):
 
 
 def _neighbours_by_generations(graph, node, generations, direction):
-    succ = []
+    neighbours = []
     current_gen = []
     current_gen.append(node)
 
@@ -56,8 +56,8 @@ def _neighbours_by_generations(graph, node, generations, direction):
                 s = graph.successors(y)
             elif direction == _Direction.Predecessors:
                 s = graph.predecessors(y)
-            succ.extend(s)
+            neighbours.extend(s)
             next_gen.extend(s)
         current_gen = next_gen
 
-    return succ
+    return neighbours
