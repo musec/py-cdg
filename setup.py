@@ -21,12 +21,12 @@ except ImportError:
 
 config = {
     'name': 'cdg',
-    'description': 'Software callgraph manipulation',
+    'description': 'Library for working with call- and data-flow graphs',
     'author': 'Jonathan Anderson',
     'author_email': 'jonathan.anderson@mun.ca',
     'url': 'https://github.com/musec/py-cdg',
     'download_url': 'https://github.com/musec/py-cdg',
-    'version': '0.1',
+    'version': '0.1.1',
     'install_requires': ['networkx', 'nose', 'pygraphviz'],
     'packages': ['cdg'],
     'scripts': ['bin/cdg-dot'],
