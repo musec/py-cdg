@@ -26,7 +26,7 @@ config = {
     'author_email': 'jonathan.anderson@mun.ca',
     'url': 'https://github.com/musec/py-cdg',
     'download_url': 'https://github.com/musec/py-cdg',
-    'install_requires': ['networkx', 'nose', 'pygraphviz'],
+    'install_requires': ['networkx', 'pygraphviz'],
     'packages': ['cdg'],
     'scripts': ['bin/cdg'],
     'setup_requires': ['setuptools_scm'],
