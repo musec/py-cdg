@@ -41,8 +41,11 @@ def load(stream, filename):
         for (k, v) in props['attributes'] if 'attributes' in props else []:
             graph.node[k] = v
 
-        for target in props['calls'] if 'calls' in props else []:
-            graph.add_edge(name, target)
+        if 'calls' in props:
+            calls = props['calls']
+            if calls:
+                for target in calls:
+                    graph.add_edge(name, target)
 
     # Bind the `to_dot` function to this graph as an instance method
     setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
