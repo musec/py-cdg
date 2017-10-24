@@ -20,14 +20,14 @@
 # limitations under the License.
 #
 
-import query
+import cdg.query
 
 
 def successors_graph_by_generations(graph, node, generations):
     succ = []
     succ.append(node)
 
-    succ.extend(query.successors_by_generations(graph, node, generations))
+    succ.extend(cdg.query.successors_by_generations(graph, node, generations))
 
     return graph.subgraph(succ)
 
@@ -36,7 +36,7 @@ def predecessors_graph_by_generations(graph, node, generations):
     pre = []
     pre.append(node)
 
-    pre.extend(query.predecessors_by_generations(graph, node, generations))
+    pre.extend(cdg.query.predecessors_by_generations(graph, node, generations))
 
     return graph.subgraph(pre)
 
