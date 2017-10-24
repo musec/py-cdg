@@ -31,7 +31,7 @@ def load(stream, filename):
         cg = yaml.load(stream, Loader=Loader)
 
     else:
-        raise ValueError, 'Unhandled file type: %s' % filename
+        raise ValueError('Unhandled file type: %s' % filename)
 
     graph = networkx.DiGraph(comment='Callgraph of %s' % filename)
 
