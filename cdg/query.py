@@ -26,11 +26,11 @@ class _Direction:
 
 
 def get_roots(graph):
-    return [n for n, d in graph.in_degree().items() if d == 0]
+    return [n for n, d in graph.in_degree() if d == 0]
 
 
 def get_leaves(graph):
-    return [n for n, d in graph.out_degree().items() if d == 0]
+    return [n for n, d in graph.out_degree() if d == 0]
 
 
 def successors_by_generations(graph, node, generations):
