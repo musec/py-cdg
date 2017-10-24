@@ -15,6 +15,12 @@
 import networkx
 
 
+def create(name):
+    graph = networkx.DiGraph(comment='Callgraph of %s' % name)
+    hot_patch(graph)
+    return graph
+
+
 def load(stream, filename):
     if filename.endswith('.cdg'):
         import ubjson
@@ -37,7 +43,7 @@ def load(stream, filename):
     else:
         raise ValueError('Unhandled file type: %s' % filename)
 
-    graph = networkx.DiGraph(comment='Callgraph of %s' % filename)
+    graph = create(filename)
 
     for (name, props) in cg['functions'].items():
         graph.add_node(name)
@@ -50,8 +56,6 @@ def load(stream, filename):
             if calls:
                 for target in calls:
                     graph.add_edge(name, target)
-
-    hot_patch(graph)
 
     return graph
 
