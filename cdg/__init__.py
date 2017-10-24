@@ -12,11 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import networkx
 
 
 def load(stream, filename):
-    if filename.endswith('.json'):
+    if filename.endswith('.cdg'):
+        import ubjson
+        cg = ubjson.load(stream)
+
+    elif filename.endswith('.json'):
         import json
         cg = json.load(stream)
 
@@ -47,7 +52,8 @@ def load(stream, filename):
                 for target in calls:
                     graph.add_edge(name, target)
 
-    # Bind the `to_dot` function to this graph as an instance method
+    # Bind some instance methods:
+    setattr(graph, 'save', save.__get__(graph, graph.__class__))
     setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
 
     return graph
@@ -58,3 +64,21 @@ def to_dot(graph, output):
     agraph.node_attr['shape'] = 'rectangle'
     agraph.node_attr['style'] = 'filled'
     agraph.write(output)
+
+
+def save(graph, output):
+    import ubjson
+
+    calls = collections.defaultdict(set)
+
+    for (source, dest) in graph.edges():
+        calls[source].add(dest)
+
+    values = {
+        'functions': dict([
+            (source, {'calls': list(dests)})
+            for (source, dests) in calls.items()
+        ])
+    }
+
+    ubjson.dump(values, output)

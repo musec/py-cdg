@@ -38,7 +38,7 @@ import docopt
 args = docopt.docopt(__doc__)
 
 cgname = args['<callgraph>']
-cgfile = open(cgname, 'r')
+cgfile = open(cgname, 'rb')
 
 filename = args['<dotfile>'] if '<dotfile>' in args else cgname + '.dot'
 outfile = open(filename, 'w')
