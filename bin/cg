@@ -25,6 +25,7 @@ Call-and-data-graph processor.
 
 Usage:
     cgd dot         [--output=<dotfile>] <graph>
+    cgd filter      [--output=<cdgfile>] <graph> <spec>...
     cgd simplify    [--output=<cdgfile>] <graph>
 
 Commands:
@@ -35,6 +36,7 @@ Options:
     -o --output=<outfile>   Output file (default depends on command)
 '''
 
+import cdg
 import docopt
 import sys
 
@@ -53,6 +55,18 @@ if args['dot']:
         outfile_name = cgname + '.dot'
 
     graph.to_dot(open(outfile_name, 'w'))
+
+elif args['filter']:
+    import cdg.filters
+    import networkx.algorithms.operators as ops
+
+    if outfile_name is None:
+        outfile_name = cgname + '-filtered.cdg'
+
+    for filter_spec in args.pop('<spec>'):
+        graph = cdg.filters.apply(filter_spec, graph)
+
+    graph.save(open(outfile_name, 'wb'))
 
 elif args['simplify']:
     simplified = graph.simplified()

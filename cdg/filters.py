@@ -1,5 +1,6 @@
 #
 # Copyright (c) 2017 Brian J. Kidney
+# Copyright (c) 2017 Jonathan Anderson
 # All rights reserved.
 #
 # This software was developed by BAE Systems, the University of Cambridge
@@ -21,6 +22,60 @@
 #
 
 import cdg.query
+
+
+def apply(filter_spec, graph):
+    '''
+    Apply a filter like pred:read,write or succ:main to a graph.
+    '''
+
+    (name, arg) = filter_spec.split(':')
+
+    if name == 'pred':
+        to_keep = arg.split(',')
+        return predecessors(graph, to_keep)
+
+    elif name == 'succ':
+        to_keep = arg.split(',')
+        return successors(graph, to_keep)
+
+
+def predecessors(graph, to_keep):
+    leaves = cdg.query.get_leaves(graph)
+    keep = set(to_keep).intersection(leaves)
+
+    result = cdg.create('Filtered graph')
+
+    for leaf in keep:
+        g = predecessors_graph_by_generations(graph, leaf, 100)
+        print('Keeping %d predecessors of %s' % (len(g.nodes()), leaf))
+
+        # Calculate non-disjoint union:
+        for n in g.nodes():
+            result.add_node(n)
+        for e in g.edges():
+            result.add_edge(*e)
+
+    return result
+
+
+def successors(graph, to_keep):
+    roots = cdg.query.get_roots(graph)
+    keep = set(to_keep).intersection(roots)
+
+    result = cdg.create('Filtered graph')
+
+    for root in keep:
+        g = successors_graph_by_generations(graph, root, 100)
+        print('Keeping %d successors of %s' % (len(g.nodes()), root))
+
+        # Calculate non-disjoint union:
+        for n in g.nodes():
+            result.add_node(n)
+        for e in g.edges():
+            result.add_edge(*e)
+
+    return result
 
 
 def successors_graph_by_generations(graph, node, generations):
