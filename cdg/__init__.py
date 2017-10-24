@@ -54,7 +54,7 @@ def load(stream, filename):
 
 
 def to_dot(graph, output):
-    agraph = networkx.to_agraph(graph)
+    agraph = networkx.drawing.nx_agraph.to_agraph(graph)
     agraph.node_attr['shape'] = 'rectangle'
     agraph.node_attr['style'] = 'filled'
     agraph.write(output)
