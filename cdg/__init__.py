@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import collections
 import networkx
 
 
@@ -87,7 +86,10 @@ def to_dot(graph, output):
 def save(graph, output):
     import ubjson
 
-    calls = collections.defaultdict(set)
+    calls = {}
+
+    for fn in graph.nodes():
+        calls[fn] = set()
 
     for (source, dest) in graph.edges():
         calls[source].add(dest)
