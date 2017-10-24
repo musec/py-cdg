@@ -1,5 +1,6 @@
 #
 # Copyright (c) 2017 Brian J. Kidney
+# Copyright (c) 2017 Jonathan Anderson
 # All rights reserved.
 #
 # This software was developed by BAE Systems, the University of Cambridge
@@ -48,8 +49,8 @@ def simplified(graph):
 
     for n in graph:
         if is_simple_node(graph, n):
-            pre = g.predecessors(n)[0]
-            suc = g.successors(n)[0]
+            (pre,) = g.predecessors(n)
+            (suc,) = g.successors(n)
             g.add_edge(pre, suc)
             g.remove_node(n)
 
