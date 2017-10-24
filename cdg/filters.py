@@ -41,12 +41,12 @@ def predecessors_graph_by_generations(graph, node, generations):
 
 
 def intersection(G, H):
-    R = G.copy()
+    R = G.full_copy()
     R.remove_nodes_from(n for n in G if n not in H)
     return R
 
 
 def union(G, H):
-    R = G.copy()
+    R = G.full_copy()
     R.add_edges_from(H.edges())
     return R

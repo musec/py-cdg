@@ -44,7 +44,7 @@ def simplified(graph):
     graph -- A networkx DiGraph
     """
 
-    g = graph.copy()
+    g = graph.full_copy()
 
     for n in graph:
         if is_simple_node(graph, n):

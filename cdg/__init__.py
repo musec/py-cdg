@@ -52,11 +52,29 @@ def load(stream, filename):
                 for target in calls:
                     graph.add_edge(name, target)
 
-    # Bind some instance methods:
-    setattr(graph, 'save', save.__get__(graph, graph.__class__))
-    setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
+    hot_patch(graph)
 
     return graph
+
+
+def hot_patch(graph):
+    '''
+    Bind new instance methods for converting, saving, etc.
+    '''
+
+    import cdg.simplify
+
+    setattr(graph, 'save', save.__get__(graph, graph.__class__))
+    setattr(graph, 'simplified',
+            simplify.simplified.__get__(graph, graph.__class__))
+    setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
+
+    def full_copy(g):
+        c = g.copy()
+        hot_patch(c)
+        return c
+
+    setattr(graph, 'full_copy', full_copy.__get__(graph, graph.__class__))
 
 
 def to_dot(graph, output):
