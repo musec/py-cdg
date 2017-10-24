@@ -12,7 +12,7 @@ Options:
     -o --output=<dotfile>    Output file (Graphviz .dot format)
 '''
 
-import cgnet
+import cdg
 import docopt
 
 args = docopt.docopt(__doc__)
@@ -23,5 +23,5 @@ cgfile = open(cgname, 'r')
 filename = args['<dotfile>'] if '<dotfile>' in args else cgname + '.dot'
 outfile = open(filename, 'w')
 
-graph = cgnet.load(cgfile, cgname)
+graph = cdg.load(cgfile, cgname)
 graph.to_dot(outfile)
