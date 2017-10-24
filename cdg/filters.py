@@ -22,6 +22,7 @@
 
 import query
 
+
 def successors_graph_by_generations(graph, node, generations):
     succ = []
     succ.append(node)

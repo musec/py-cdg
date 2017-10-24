@@ -21,6 +21,7 @@
 # limitations under the License.
 #
 
+
 def is_simple_node(graph, node):
     """A node is "Simple" if none of the following is true
     - it has multiple inputs (it joins chains together)
