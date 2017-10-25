@@ -31,13 +31,31 @@ def apply(filter_spec, graph):
 
     (name, arg) = filter_spec.split(':')
 
-    if name == 'pred':
+    if name == 'exclude':
+        to_keep = arg.split(',')
+        return exclude(graph, to_keep)
+
+    elif name == 'pred':
         to_keep = arg.split(',')
         return predecessors(graph, to_keep)
 
     elif name == 'succ':
         to_keep = arg.split(',')
         return successors(graph, to_keep)
+
+
+def exclude(graph, to_exclude):
+    result = graph.copy()
+
+    for n in to_exclude:
+        result.remove_node(n)
+
+    print('Removed %d nodes, %d edges' % (
+        len(graph.nodes) - len(result.nodes),
+        len(graph.edges) - len(result.edges),
+    ))
+
+    return result
 
 
 def predecessors(graph, to_keep):
