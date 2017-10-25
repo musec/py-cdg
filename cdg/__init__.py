@@ -104,18 +104,31 @@ def is_flow(attrs):
 def save(graph, output):
     import ubjson
 
-    calls = {}
+    functions = {}
 
+    # Initialize functions to empty calls/flows tuple
     for fn in graph.nodes():
-        calls[fn] = set()
+        functions[fn] = (set(),set())
 
-    for (source, dest) in graph.edges():
-        calls[source].add(dest)
+    for (source,dest,attrs) in graph.edges(data = True):
+        (calls,flows) = functions[source]
+
+        if is_call(attrs):
+            functions[source][0].add(dest)
+
+        elif is_flow(attrs):
+            functions[dest][1].add(source)
+
+        else:
+            assert False   # invalid EdgeKind
 
     values = {
         'functions': dict([
-            (source, {'calls': list(dests)})
-            for (source, dests) in calls.items()
+            (name, {
+                'calls': list(calls),
+                'flows': list(flows),
+            })
+            for (name, (calls, flows)) in functions.items()
         ])
     }
 
