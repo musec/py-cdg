@@ -56,6 +56,7 @@ def _neighbours_by_generations(graph, node, generations, direction):
                 s = graph.successors(y)
             elif direction == _Direction.Predecessors:
                 s = graph.predecessors(y)
+            s = list(s)
             neighbours.extend(s)
             next_gen.extend(s)
         current_gen = next_gen
