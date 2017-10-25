@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import cdg.graphviz
 import networkx
 
 
@@ -80,7 +81,7 @@ def hot_patch(graph):
     setattr(graph, 'save', save.__get__(graph, graph.__class__))
     setattr(graph, 'simplified',
             simplify.simplified.__get__(graph, graph.__class__))
-    setattr(graph, 'to_dot', to_dot.__get__(graph, graph.__class__))
+    setattr(graph, 'to_dot', cdg.graphviz.dot.__get__(graph, graph.__class__))
 
     def full_copy(g):
         c = g.copy()
@@ -90,13 +91,6 @@ def hot_patch(graph):
     setattr(graph, 'full_copy', full_copy.__get__(graph, graph.__class__))
 
     return graph
-
-
-def to_dot(graph, output):
-    agraph = networkx.drawing.nx_agraph.to_agraph(graph)
-    agraph.node_attr['shape'] = 'rectangle'
-    agraph.node_attr['style'] = 'filled'
-    agraph.write(output)
 
 
 def save(graph, output):
