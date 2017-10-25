@@ -21,48 +21,39 @@
 #
 
 
-class _Direction:
-    Successors, Predecessors = range(2)
+def transitive_neighbours(graph, starting_nodes, select_fn, depth_limit = None):
+    result = set()
+    seen = set()
+    working_set = set(starting_nodes)
 
+    depth = 0
+    while True:
+        next_gen = set()
 
-def get_roots(graph):
-    return [n for n, d in graph.in_degree() if d == 0]
-
-
-def get_leaves(graph):
-    return [n for n, d in graph.out_degree() if d == 0]
-
-
-def successors_by_generations(graph, node, generations):
-    return _neighbours_by_generations(graph, node, generations,
-                                      _Direction.Successors)
-
-
-def predecessors_by_generations(graph, node, generations):
-    return _neighbours_by_generations(graph, node, generations,
-                                      _Direction.Predecessors)
-
-
-def _neighbours_by_generations(graph, node, generations, direction):
-    seen = set([ node ])
-    neighbours = []
-    current_gen = []
-    current_gen.append(node)
-
-    for x in range(0, generations):
-        next_gen = []
-        for y in current_gen:
-            s = []
-            if direction == _Direction.Successors:
-                s = graph.successors(y)
-            elif direction == _Direction.Predecessors:
-                s = graph.predecessors(y)
-            s = set(s)
-            if seen.intersection(s) == s:
+        for node in working_set:
+            if node not in graph.nodes:
                 continue
-            seen = seen.union(s)
-            neighbours.extend(s)
-            next_gen.extend(s)
-        current_gen = next_gen
 
-    return neighbours
+            result.add(node)
+            seen.add(node)
+
+            selected = set(select_fn(node))
+
+            # Don't recurse down paths that we've previously explored
+            if seen.intersection(selected) == selected:
+                continue
+
+            seen = seen.union(selected)
+            result = result.union(selected)
+            next_gen = next_gen.union(selected)
+
+        working_set = next_gen
+        if len(working_set) == 0:
+            break
+
+        if depth_limit:
+            depth += 1
+            if depth >= depth_limit:
+                break
+
+    return result

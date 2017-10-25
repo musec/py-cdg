@@ -79,6 +79,8 @@ def hot_patch(graph):
 
     setattr(graph, 'full_copy', full_copy.__get__(graph, graph.__class__))
 
+    return graph
+
 
 def to_dot(graph, output):
     agraph = networkx.drawing.nx_agraph.to_agraph(graph)

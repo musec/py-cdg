@@ -36,12 +36,31 @@ def apply(filter_spec, graph):
         return exclude(graph, to_keep)
 
     elif name == 'pred':
-        to_keep = arg.split(',')
-        return predecessors(graph, to_keep)
+        keep = set(arg.split(','))
+        select_fn = graph.predecessors
+        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
 
     elif name == 'succ':
-        to_keep = arg.split(',')
-        return successors(graph, to_keep)
+        keep = set(arg.split(','))
+        select_fn = graph.successors
+        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return cdg.hot_patch(graph.subgraph(nodes))
 
 
 def exclude(graph, to_exclude):
@@ -56,62 +75,6 @@ def exclude(graph, to_exclude):
     ))
 
     return result
-
-
-def predecessors(graph, to_keep):
-    result = cdg.create('Filtered graph')
-
-    for leaf in to_keep:
-        if leaf not in graph:
-            continue
-
-        g = predecessors_graph_by_generations(graph, leaf, 100)
-        print('Keeping %d predecessors of %s' % (len(g.nodes()), leaf))
-
-        # Calculate non-disjoint union:
-        for n in g.nodes():
-            result.add_node(n)
-        for e in g.edges():
-            result.add_edge(*e)
-
-    return result
-
-
-def successors(graph, to_keep):
-    result = cdg.create('Filtered graph')
-
-    for root in to_keep:
-        if root not in graph:
-            continue
-
-        g = successors_graph_by_generations(graph, root, 100)
-        print('Keeping %d successors of %s' % (len(g.nodes()), root))
-
-        # Calculate non-disjoint union:
-        for n in g.nodes():
-            result.add_node(n)
-        for e in g.edges():
-            result.add_edge(*e)
-
-    return result
-
-
-def successors_graph_by_generations(graph, node, generations):
-    succ = []
-    succ.append(node)
-
-    succ.extend(cdg.query.successors_by_generations(graph, node, generations))
-
-    return graph.subgraph(succ)
-
-
-def predecessors_graph_by_generations(graph, node, generations):
-    pre = []
-    pre.append(node)
-
-    pre.extend(cdg.query.predecessors_by_generations(graph, node, generations))
-
-    return graph.subgraph(pre)
 
 
 def intersection(G, H):
