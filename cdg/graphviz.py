@@ -12,11 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import cdg
 import networkx
 
 
 def dot(graph, output):
-    agraph = networkx.drawing.nx_agraph.to_agraph(graph)
+    pretty = graph.full_copy()
+    for (src,dest,attrs) in pretty.edges(data = True):
+        kind = attrs['kind']
+
+        if kind == cdg.EdgeKind.Call:
+            attrs['color'] = '#66666699'
+
+        elif kind == cdg.EdgeKind.Flow:
+            attrs['color'] = '#ff666699'
+
+        else:
+            assert False    # invalid EdgeKind
+
+    agraph = networkx.drawing.nx_agraph.to_agraph(pretty)
     agraph.node_attr['shape'] = 'rectangle'
     agraph.node_attr['style'] = 'filled'
     agraph.write(output)
