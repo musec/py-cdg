@@ -59,12 +59,12 @@ def exclude(graph, to_exclude):
 
 
 def predecessors(graph, to_keep):
-    leaves = cdg.query.get_leaves(graph)
-    keep = set(to_keep).intersection(leaves)
-
     result = cdg.create('Filtered graph')
 
-    for leaf in keep:
+    for leaf in to_keep:
+        if leaf not in graph:
+            continue
+
         g = predecessors_graph_by_generations(graph, leaf, 100)
         print('Keeping %d predecessors of %s' % (len(g.nodes()), leaf))
 
@@ -78,12 +78,12 @@ def predecessors(graph, to_keep):
 
 
 def successors(graph, to_keep):
-    roots = cdg.query.get_roots(graph)
-    keep = set(to_keep).intersection(roots)
-
     result = cdg.create('Filtered graph')
 
-    for root in keep:
+    for root in to_keep:
+        if root not in graph:
+            continue
+
         g = successors_graph_by_generations(graph, root, 100)
         print('Keeping %d successors of %s' % (len(g.nodes()), root))
 
