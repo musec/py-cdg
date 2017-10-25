@@ -26,7 +26,7 @@ import cdg.query
 
 def apply(filter_spec, graph):
     '''
-    Apply a filter like pred:read,write or succ:main to a graph.
+    Apply a filter like calls-to:read,write or flows-from:main to a graph.
     '''
 
     (name, arg) = filter_spec.split(':')
@@ -35,30 +35,49 @@ def apply(filter_spec, graph):
         to_keep = arg.split(',')
         return exclude(graph, to_keep)
 
-    elif name == 'pred':
+    elif name == 'calls-from':
         keep = set(arg.split(','))
-        select_fn = graph.predecessors
+
+        select_fn = lambda node: (
+            n for n in graph.successors(node)
+            if graph.edges[node,n]['kind'] == cdg.EdgeKind.Call
+        )
+
         nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
 
-    elif name == 'succ':
+    elif name == 'calls-to':
         keep = set(arg.split(','))
-        select_fn = graph.successors
+
+        select_fn = lambda node: (
+            n for n in graph.predecessors(node)
+            if graph.edges[n,node]['kind'] == cdg.EdgeKind.Call
+        )
+
         nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
 
+    elif name == 'flows-from':
+        keep = set(arg.split(','))
 
+        select_fn = lambda node: (
+            n for n in graph.successors(node)
+            if graph.edges[node,n]['kind'] == cdg.EdgeKind.Flow
+        )
 
+        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
 
+    elif name == 'flows-to':
+        keep = set(arg.split(','))
 
+        select_fn = lambda node: (
+            n for n in graph.predecessors(node)
+            if graph.edges[n,node]['kind'] == cdg.EdgeKind.Flow
+        )
 
-
-
-
-
-
-
-
+        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
 
     return cdg.hot_patch(graph.subgraph(nodes))
 

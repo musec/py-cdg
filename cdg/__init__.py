@@ -15,6 +15,10 @@
 import networkx
 
 
+class EdgeKind:
+    Call, Flow = range(2)
+
+
 def create(name):
     graph = networkx.DiGraph(comment='Callgraph of %s' % name)
     hot_patch(graph)
@@ -55,7 +59,13 @@ def load(stream, filename):
             calls = props['calls']
             if calls:
                 for target in calls:
-                    graph.add_edge(name, target)
+                    graph.add_edge(name, target, kind = EdgeKind.Call)
+
+        if 'flows' in props:
+            flows = props['flows']
+            if flows:
+                for source in flows:
+                    graph.add_edge(source, name, kind = EdgeKind.Flow)
 
     return graph
 
