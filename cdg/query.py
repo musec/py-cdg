@@ -21,6 +21,22 @@
 #
 
 
+def pred(graph, node, kind):
+    nodes = set(graph.predecessors(node))
+
+    return (
+        src for (src,dest,attrs) in graph.edges(nodes, data = True)
+        if dest == node and attribute_predicate(attrs)
+    )
+
+
+def succ(graph, node, attribute_predicate):
+    return (
+        dest for (src,dest,attrs) in graph.edges(node, data = True)
+        if src == node and attribute_predicate(attrs)
+    )
+
+
 def transitive_neighbours(graph, starting_nodes, select_fn, depth_limit = None):
     result = set()
     seen = set()

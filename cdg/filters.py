@@ -30,54 +30,34 @@ def apply(filter_spec, graph):
     '''
 
     (name, arg) = filter_spec.split(':')
+    args = arg.split(',')
 
     if name == 'exclude':
-        to_keep = arg.split(',')
-        return exclude(graph, to_keep)
+        return exclude(graph, args)
 
     elif name == 'calls-from':
-        keep = set(arg.split(','))
+        select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_call)
+        nodes = cdg.query.transitive_neighbours(graph, args, select_fn)
 
-        select_fn = lambda node: (
-            n for n in graph.successors(node)
-            if graph.edges[node,n]['kind'] == cdg.EdgeKind.Call
-        )
-
-        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'calls-to':
-        keep = set(arg.split(','))
+        select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_call)
+        nodes = cdg.query.transitive_neighbours(graph, args, select_fn)
 
-        select_fn = lambda node: (
-            n for n in graph.predecessors(node)
-            if graph.edges[n,node]['kind'] == cdg.EdgeKind.Call
-        )
-
-        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-from':
-        keep = set(arg.split(','))
+        select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_flow)
+        nodes = cdg.query.transitive_neighbours(graph, args, select_fn)
 
-        select_fn = lambda node: (
-            n for n in graph.successors(node)
-            if graph.edges[node,n]['kind'] == cdg.EdgeKind.Flow
-        )
-
-        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-to':
-        keep = set(arg.split(','))
+        select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_flow)
+        nodes = cdg.query.transitive_neighbours(graph, args, select_fn)
 
-        select_fn = lambda node: (
-            n for n in graph.predecessors(node)
-            if graph.edges[n,node]['kind'] == cdg.EdgeKind.Flow
-        )
-
-        nodes = cdg.query.transitive_neighbours(graph, keep, select_fn)
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(keep)))
+        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     return cdg.hot_patch(graph.subgraph(nodes))
 
