@@ -53,8 +53,8 @@ def load(stream, filename):
     for (name, props) in cg['functions'].items():
         graph.add_node(name)
 
-        for (k, v) in props['attributes'] if 'attributes' in props else []:
-            graph.node[k] = v
+        if 'attributes' in props:
+            graph.node[name].update(props['attributes'])
 
         if 'calls' in props:
             calls = props['calls']
@@ -107,11 +107,11 @@ def save(graph, output):
     functions = {}
 
     # Initialize functions to empty calls/flows tuple
-    for fn in graph.nodes():
-        functions[fn] = (set(),set())
+    for (fn, attrs) in graph.nodes(data = True):
+        functions[fn] = (set(), set(), attrs)
 
     for (source,dest,attrs) in graph.edges(data = True):
-        (calls,flows) = functions[source]
+        (calls, flows, _) = functions[source]
 
         if is_call(attrs):
             functions[source][0].add(dest)
@@ -125,10 +125,11 @@ def save(graph, output):
     values = {
         'functions': dict([
             (name, {
+                'attributes': attrs,
                 'calls': list(calls),
                 'flows': list(flows),
             })
-            for (name, (calls, flows)) in functions.items()
+            for (name, (calls, flows, attrs)) in functions.items()
         ])
     }
 
