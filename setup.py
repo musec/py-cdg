@@ -29,7 +29,7 @@ config = {
     'version': '0.1.2',
     'install_requires': ['networkx', 'nose', 'pygraphviz'],
     'packages': ['cdg'],
-    'scripts': ['bin/cdg-dot'],
+    'scripts': ['bin/cdg'],
     'test_suite': 'nose.collector',
     'tests_require': ['nose'],
 }
