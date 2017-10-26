@@ -15,9 +15,59 @@
 import cdg
 import networkx
 
+class Colour:
+    CallRoot = '#ffcc6699'
+    CallTarget = '#99663399'
+
+    FlowSource = '#99ccff99'
+    FlowSink = '#cc666699'
+
 
 def dot(graph, output):
     pretty = graph.full_copy()
+
+    for (node, attrs) in pretty.nodes(data = True):
+        callend = attrs['call'] if 'call' in attrs else None
+        flowend = attrs['flow'] if 'flow' in attrs else None
+
+        target = (callend == 'target')
+        root = (callend == 'root')
+        source = (flowend == 'source')
+        sink = (flowend == 'sink')
+
+        # Colour:
+        colours = []
+        if root:
+            colours.append(Colour.CallRoot)
+
+        if target:
+            colours.append(Colour.CallTarget)
+
+        if source:
+            colours.append(Colour.FlowSource)
+
+        if sink:
+            colours.append(Colour.FlowSink)
+
+        if len(colours) == 0:
+            attrs['fillcolor'] = '#cccccc66'
+
+        elif len(colours) == 1:
+            attrs['fillcolor'] = colours[0]
+
+        else:
+            weight = 1.0 / len(colours)
+            attrs['fillcolor'] = ':'.join(
+                [ '%s;%f' % (c, weight) for c in colours ])
+
+        # Shape:
+        if sink or target:
+            attrs['shape'] = 'doubleoctagon'
+
+        elif source or root:
+            attrs['shape'] = 'doublecircle'
+
+
     for (src,dest,attrs) in pretty.edges(data = True):
         kind = attrs['kind']
 
