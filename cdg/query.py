@@ -21,7 +21,7 @@
 #
 
 
-def pred(graph, node, kind):
+def pred(graph, node, attribute_predicate):
     nodes = set(graph.predecessors(node))
 
     return (
