@@ -27,12 +27,16 @@ Usage:
     cgd dot         [--output=<dotfile>] <graph>
     cgd filter      [--output=<cdgfile>] <graph> <spec>...
     cgd simplify    [--output=<cdgfile>] <graph>
+    cgd -h | --help
+    cgd --version
 
 Commands:
     dot             Output GraphViz .dot representation
     simplify        Simplify a complex graph via path compression
 
 Options:
+    -h --help               Show this message
+    --version               Show version
     -o --output=<outfile>   Output file (default depends on command)
 '''
 
@@ -42,6 +46,17 @@ import sys
 
 
 args = docopt.docopt(__doc__)
+
+if args['--version']:
+    # Try version from installed package first:
+    from pkg_resources import get_distribution, DistributionNotFound
+    try:
+        version = get_distribution("cdg").version
+    except:
+        version = '<error: failed to get version>'
+
+    print('cdg v%s' % version)
+    sys.exit(0)
 
 cgname = args.pop('<graph>')
 graph = cdg.load(open(cgname, 'rb'), cgname)

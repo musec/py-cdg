@@ -1,4 +1,5 @@
 networkx
 pygraphviz
+setuptools_scm>=1.1
 docopt
 PyYAML

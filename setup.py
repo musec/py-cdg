@@ -26,12 +26,13 @@ config = {
     'author_email': 'jonathan.anderson@mun.ca',
     'url': 'https://github.com/musec/py-cdg',
     'download_url': 'https://github.com/musec/py-cdg',
-    'version': '0.1.2',
     'install_requires': ['networkx', 'nose', 'pygraphviz'],
     'packages': ['cdg'],
     'scripts': ['bin/cdg'],
+    'setup_requires': ['setuptools_scm'],
     'test_suite': 'nose.collector',
     'tests_require': ['nose'],
+    'use_scm_version': True,
 }
 
 setup(**config)
