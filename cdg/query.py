@@ -37,10 +37,15 @@ def succ(graph, node, attribute_predicate):
     )
 
 
-def transitive_neighbours(graph, starting_nodes, select_fn, depth_limit = None):
+def transitive_neighbours(graph, starting_nodes, select_fn, annotations=None,
+                          depth_limit=None):
     result = set()
     seen = set()
-    working_set = set(starting_nodes)
+    working_set = set(starting_nodes).intersection(graph.nodes)
+
+    if annotations:
+        for node in working_set:
+            graph.nodes[node].update(annotations)
 
     depth = 0
     while True:
