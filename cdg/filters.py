@@ -42,12 +42,14 @@ def apply(filter_spec, graph):
     Apply a filter like calls-to:read,write or flows-from:main to a graph.
     '''
 
-    (name, arg) = filter_spec.split(':')
-    args = arg.split(',')
+    tokens = filter_spec.split(':')
+    name = tokens[0]
+    args = tokens[1].split(',')
+    depth_limit = int(tokens[2]) if len(tokens) > 2 else None
 
     def get_neighbours(select_fn, **annotations):
         return cdg.query.transitive_neighbours(graph, args, select_fn,
-                                               annotations)
+                                               annotations, depth_limit)
 
     if name == 'identity':
         return graph
