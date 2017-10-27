@@ -68,13 +68,13 @@ def apply(filter_spec, graph):
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-from':
-        select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_flow)
+        select_fn = lambda node: cdg.query.succ(graph, node, lambda _: True)
         nodes = get_neighbours(select_fn, flow='source')
 
         print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-to':
-        select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_flow)
+        select_fn = lambda node: cdg.query.pred(graph, node, lambda _: True)
         nodes = get_neighbours(select_fn, flow='sink')
 
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
