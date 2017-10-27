@@ -81,7 +81,7 @@ def apply(filter_spec, graph):
 
 
 def exclude(graph, to_exclude):
-    result = graph.copy()
+    result = graph.full_copy()
 
     for n in to_exclude:
         result.remove_node(n)
