@@ -85,6 +85,7 @@ elif args['filter']:
                 e.filter_spec, e.message))
             sys.exit(1)
 
+    print('Saving filtered graph: %d nodes, %d edges' % graph.dimensions())
     graph.save(open(outfile_name, 'wb'))
 
 elif args['simplify']:
@@ -97,6 +98,7 @@ elif args['simplify']:
     if outfile_name is None:
         outfile_name = cgname + '-simplified.cdg'
 
+    print('Saving simplified graph: %d nodes, %d edges' % graph.dimensions())
     simplified.save(open(outfile_name, 'wb'))
 
 else:
