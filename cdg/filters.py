@@ -45,7 +45,9 @@ def apply(filter_spec, graph):
     (name, arg) = filter_spec.split(':')
     args = arg.split(',')
 
-    get_neighbours = cdg.query.transitive_neighbours
+    def get_neighbours(select_fn, **annotations):
+        return cdg.query.transitive_neighbours(graph, args, select_fn,
+                                               annotations)
 
     if name == 'identity':
         return graph
@@ -55,25 +57,25 @@ def apply(filter_spec, graph):
 
     elif name == 'calls-from':
         select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_call)
-        nodes = get_neighbours(graph, args, select_fn, { 'call': 'root' })
+        nodes = get_neighbours(select_fn, call='root')
 
         print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'calls-to':
         select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_call)
-        nodes = get_neighbours(graph, args, select_fn, { 'call': 'target' })
+        nodes = get_neighbours(select_fn, call='target')
 
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-from':
         select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_flow)
-        nodes = get_neighbours(graph, args, select_fn, { 'flow': 'source' })
+        nodes = get_neighbours(select_fn, flow='source')
 
         print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-to':
         select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_flow)
-        nodes = get_neighbours(graph, args, select_fn, { 'flow': 'sink' })
+        nodes = get_neighbours(select_fn, flow='sink')
 
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
 
