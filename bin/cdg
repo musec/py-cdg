@@ -79,7 +79,12 @@ elif args['filter']:
         outfile_name = cgname + '-filtered.cdg'
 
     for filter_spec in args.pop('<spec>'):
-        graph = cdg.filters.apply(filter_spec, graph)
+        try:
+            graph = cdg.filters.apply(filter_spec, graph)
+        except cdg.filters.FilterError as e:
+            sys.stderr.write("Error filtering graph with '%s': %s\n" % (
+                e.filter_spec, e.message))
+            sys.exit(1)
 
     graph.save(open(outfile_name, 'wb'))
 

@@ -24,6 +24,19 @@
 import cdg.query
 
 
+class FilterError(Exception):
+    """Raised when an error is encountered filtering a graph.
+
+    Attributes:
+        filter_spec       User-provided filter specification
+        message           Explanation
+    """
+
+    def __init__(self, filter_spec, message):
+        self.filter_spec = filter_spec
+        self.message = message
+
+
 def apply(filter_spec, graph):
     '''
     Apply a filter like calls-to:read,write or flows-from:main to a graph.
@@ -60,6 +73,9 @@ def apply(filter_spec, graph):
         nodes = get_neighbours(graph, args, select_fn, { 'flow': 'sink' })
 
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
+
+    else:
+        raise FilterError(filter_spec, 'Invalid filter')
 
     return cdg.hot_patch(graph.subgraph(nodes))
 
