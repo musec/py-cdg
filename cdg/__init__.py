@@ -26,6 +26,10 @@ def create(name):
     return graph
 
 
+def dimensions(graph):
+    return (len(graph.nodes()), len(graph.edges()))
+
+
 def load(stream, filename):
     if filename.endswith('.cdg'):
         import ubjson
@@ -78,6 +82,7 @@ def hot_patch(graph):
 
     import cdg.simplify
 
+    setattr(graph, 'dimensions', dimensions.__get__(graph, graph.__class__))
     setattr(graph, 'save', save.__get__(graph, graph.__class__))
     setattr(graph, 'simplified',
             simplify.simplified.__get__(graph, graph.__class__))

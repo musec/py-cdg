@@ -60,8 +60,7 @@ if args['--version']:
 
 cgname = args.pop('<graph>')
 graph = cdg.load(open(cgname, 'rb'), cgname)
-dimensions = (len(graph.nodes()), len(graph.edges()))
-print('Loaded graph with %d nodes, %d edges' % dimensions)
+print('Loaded graph with %d nodes, %d edges' % graph.dimensions())
 
 outfile_name = args['--output'] if '--output' in args else None
 
@@ -91,9 +90,9 @@ elif args['filter']:
 elif args['simplify']:
     simplified = graph.simplified()
 
-    end_dimensions = (len(simplified.nodes()), len(simplified.edges()))
     print('Eliminated %d nodes, %d edges' %
-          tuple(x - y for x, y in zip(dimensions, end_dimensions)))
+          tuple(x - y for x, y in zip(
+                  graph.dimensions(), simplified.dimensions())))
 
     if outfile_name is None:
         outfile_name = cgname + '-simplified.cdg'
