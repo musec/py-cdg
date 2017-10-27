@@ -60,6 +60,10 @@ def dot(graph, output):
             attrs['fillcolor'] = ':'.join(
                 [ '%s;%f' % (c, weight) for c in colours ])
 
+        # Font:
+        if root or target or sink or source:
+            attrs['fontsize'] = 24
+
         # Shape:
         if sink or target:
             attrs['shape'] = 'doubleoctagon'
