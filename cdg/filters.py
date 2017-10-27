@@ -54,7 +54,7 @@ def apply(filter_spec, graph):
         select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_call)
         nodes = get_neighbours(graph, args, select_fn, { 'call': 'root' })
 
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
+        print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'calls-to':
         select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_call)
@@ -66,7 +66,7 @@ def apply(filter_spec, graph):
         select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_flow)
         nodes = get_neighbours(graph, args, select_fn, { 'flow': 'source' })
 
-        print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
+        print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'flows-to':
         select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_flow)
