@@ -47,7 +47,10 @@ def apply(filter_spec, graph):
 
     get_neighbours = cdg.query.transitive_neighbours
 
-    if name == 'exclude':
+    if name == 'identity':
+        return graph
+
+    elif name == 'exclude':
         return exclude(graph, args)
 
     elif name == 'calls-from':
