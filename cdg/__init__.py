@@ -19,6 +19,27 @@ import networkx
 class EdgeKind:
     Call, Operand, Memory, Meta = range(4)
 
+    @classmethod
+    def from_str(cls, name):
+        if name == 'call':
+            return EdgeKind.Call
+        elif name == 'memory':
+            return EdgeKind.Memory
+        elif name == 'meta':
+            return EdgeKind.Meta
+        elif name == 'operand':
+            return EdgeKind.Operand
+
+    def to_str(self):
+        if self == EdgeKind.Call:
+            return 'call'
+        elif self == EdgeKind.Memory:
+            return 'memory'
+        elif self == EdgeKind.Meta:
+            return 'meta'
+        elif self == EdgeKind.Operand:
+            return 'operand'
+
 
 def create(name):
     graph = networkx.DiGraph(comment='Callgraph of %s' % name)
@@ -96,14 +117,7 @@ def load(stream, filename):
                 for flow in flows:
                     source = flow['from']
                     dest = flow['to']
-                    k = flow['kind']
-
-                    if k == 'memory':
-                        kind = EdgeKind.Memory
-                    elif k == 'meta':
-                        kind = EdgeKind.Meta
-                    elif k == 'operand':
-                        kind = EdgeKind.Operand
+                    kind = EdgeKind.from_str(flow['kind'])
 
                     graph.add_edge(source, dest, kind=kind)
 
