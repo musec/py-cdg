@@ -182,8 +182,9 @@ def save(graph, output):
             ])
 
             for child_name in block_attrs['children']:
-                child_attrs = nodes[child_name]
-                child_attrs.pop('parent')
+                child_attrs = nodes[child_name] if child_name in nodes else {}
+                if 'parent' in child_attrs:
+                    child_attrs.pop('parent')
                 assert 'children' not in child_attrs
 
                 block[child_name] = child_attrs
