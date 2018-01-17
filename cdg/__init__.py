@@ -60,6 +60,10 @@ def load(stream, filename):
         if 'attributes' in props:
             graph.node[fn_name].update(props['attributes'])
 
+        if 'arguments' in props:
+            for (name, attrs) in props['arguments'].items():
+                graph.add_node(name, **attrs)
+
         if 'blocks' in props:
             for (block_name, values) in props['blocks'].items():
                 graph.add_node(block_name)
