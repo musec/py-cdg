@@ -33,7 +33,7 @@ def dot(graph, output):
         kind = attrs['kind']
 
         if kind == cdg.EdgeKind.Call:
-            attrs['color'] = '#ff66ff99'
+            attrs['color'] = '#ff66ffff'
 
         elif kind == cdg.EdgeKind.Memory:
             attrs['color'] = '#ff666699'
