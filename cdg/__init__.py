@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cdg.graphviz
+import collections
 import networkx
 
 
@@ -147,22 +148,26 @@ def hot_patch(graph):
     return graph
 
 
+def new_empty_function():
+    return {
+        'arguments': dict(),
+        'attributes': dict(),
+        'blocks': dict(),
+        'calls': list(),
+        'flows': list(),
+    }
+
+
 def save(graph, output):
     nodes = graph.nodes
     roots = ( (k,v) for (k,v) in graph.nodes.items() if 'parent' not in v )
 
-    functions = {}
+    functions = collections.defaultdict(new_empty_function)
     for (fn_name, fn_attrs) in roots:
         if 'children' not in fn_attrs:
             continue
 
-        fn = {
-            'arguments': dict(),
-            'attributes': dict(),
-            'blocks': dict(),
-            'calls': list(),
-            'flows': list(),
-        }
+        fn = functions[fn_name]
 
         # Blocks have children; anything else must be an argument.
         child_names = set(fn_attrs['children'])
