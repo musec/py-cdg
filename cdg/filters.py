@@ -58,13 +58,13 @@ def apply(filter_spec, graph):
         return exclude(graph, args)
 
     elif name == 'calls-from':
-        select_fn = lambda node: cdg.query.succ(graph, node, cdg.is_call)
+        select_fn = lambda node: cdg.query.succ(graph, node, is_call)
         nodes = get_neighbours(select_fn, call='root')
 
         print('Keeping %d successors of %d nodes' % (len(nodes), len(args)))
 
     elif name == 'calls-to':
-        select_fn = lambda node: cdg.query.pred(graph, node, cdg.is_call)
+        select_fn = lambda node: cdg.query.pred(graph, node, is_call)
         nodes = get_neighbours(select_fn, call='target')
 
         print('Keeping %d predecessors of %d nodes' % (len(nodes), len(args)))
@@ -99,6 +99,10 @@ def exclude(graph, to_exclude):
     ))
 
     return result
+
+
+def is_call(attrs):
+    return attrs['kind'] == cdg.EdgeKind.Call
 
 
 def intersection(G, H):

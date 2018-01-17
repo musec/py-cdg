@@ -147,14 +147,6 @@ def hot_patch(graph):
     return graph
 
 
-def is_call(attrs):
-    return attrs['kind'] == EdgeKind.Call
-
-
-def is_flow(attrs):
-    return attrs['kind'] == EdgeKind.Flow
-
-
 def save(graph, output):
     nodes = graph.nodes
     roots = ( (k,v) for (k,v) in graph.nodes.items() if 'parent' not in v )
