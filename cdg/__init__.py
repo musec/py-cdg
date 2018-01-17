@@ -156,35 +156,64 @@ def is_flow(attrs):
 
 
 def save(graph, output):
-    import ubjson
+    nodes = graph.nodes
+    roots = ( (k,v) for (k,v) in graph.nodes.items() if 'parent' not in v )
 
     functions = {}
+    for (fn_name, fn_attrs) in roots:
+        if 'children' not in fn_attrs:
+            continue
 
-    # Initialize functions to empty calls/flows tuple
-    for (fn, attrs) in graph.nodes(data = True):
-        functions[fn] = (set(), set(), attrs)
+        fn = {
+            'arguments': dict(),
+            'attributes': dict(),
+            'blocks': dict(),
+            'calls': list(),
+            'flows': list(),
+        }
 
-    for (source,dest,attrs) in graph.edges(data = True):
-        (calls, flows, _) = functions[source]
+        # Blocks have children; anything else must be an argument.
+        child_names = set(fn_attrs['children'])
+        blocks = { n for n in child_names if 'children' in nodes[n] }
+        args = child_names.difference(blocks)
 
-        if is_call(attrs):
-            functions[source][0].add(dest)
+        for block_name in blocks:
+            block_attrs = nodes[block_name]
+            block = fn['blocks'][block_name] = dict([
+                (k,v) for (k,v) in nodes[block_name].items()
+                if k not in ('parent', 'children')
+            ])
 
-        elif is_flow(attrs):
-            functions[dest][1].add(source)
+            for child_name in block_attrs['children']:
+                child_attrs = nodes[child_name]
+                child_attrs.pop('parent')
+                assert 'children' not in child_attrs
 
+                block[child_name] = child_attrs
+
+        for arg_name in args:
+            arg_attrs = nodes[arg_name]
+            arg_attrs.pop('parent')
+            assert 'children' not in arg_attrs
+
+            fn['arguments'][arg_name] = dict(arg_attrs)
+
+        functions[fn_name] = fn
+
+    for (src, dest, data) in graph.edges(data=True):
+        (fn_name, src_name) = src.split('::', 1)
+        kind = data['kind']
+
+        data = {
+            'from': src,
+            'to': dest,
+            'kind': EdgeKind.to_str(kind),
+        }
+
+        if kind == EdgeKind.Call:
+            functions[fn_name]['calls'].append(data)
         else:
-            assert False   # invalid EdgeKind
+            functions[fn_name]['flows'].append(data)
 
-    values = {
-        'functions': dict([
-            (name, {
-                'attributes': attrs,
-                'calls': list(calls),
-                'flows': list(flows),
-            })
-            for (name, (calls, flows, attrs)) in functions.items()
-        ])
-    }
-
-    ubjson.dump(values, output)
+    import ubjson
+    ubjson.dump({'functions': functions}, output)
