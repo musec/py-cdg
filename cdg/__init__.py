@@ -54,17 +54,20 @@ def load(stream, filename):
 
     graph = create(filename)
 
-    for (name, props) in cg['functions'].items():
-        graph.add_node(name)
+    for (fn_name, props) in cg['functions'].items():
+        graph.add_node(fn_name)
 
         if 'attributes' in props:
-            graph.node[name].update(props['attributes'])
+            graph.node[fn_name].update(props['attributes'])
 
         if 'calls' in props:
             calls = props['calls']
             if calls:
-                for target in calls:
-                    graph.add_edge(name, target, kind = EdgeKind.Call)
+                for call in calls:
+                    source = call['from']
+                    dest = call['to']
+
+                    graph.add_edge(source, dest, kind = EdgeKind.Call)
 
         if 'flows' in props:
             flows = props['flows']
