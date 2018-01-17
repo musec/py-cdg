@@ -56,23 +56,24 @@ def load(stream, filename):
 
     fns = cg['functions']
     for (fn_name, props) in fns.items():
-        graph.add_node(fn_name)
+        graph.add_node(fn_name, children=set())
 
         if 'attributes' in props:
             graph.node[fn_name].update(props['attributes'])
 
         if 'arguments' in props:
             for (name, attrs) in props['arguments'].items():
-                graph.add_node(name, **attrs)
+                graph.add_node(name, parent=fn_name, **attrs)
+                graph.nodes[fn_name]['children'].add(name)
 
         if 'blocks' in props:
             for (block_name, values) in props['blocks'].items():
-                graph.add_node(block_name)
-                graph.nodes[block_name].update({'parent':fn_name})
+                graph.add_node(block_name, parent=fn_name, children=set())
+                graph.nodes[fn_name]['children'].add(block_name)
+                graph.nodes[block_name]['children'] = set(values)
 
                 for (value_name, value_attrs) in values.items():
-                    graph.add_node(value_name, **value_attrs)
-                    graph.nodes[value_name].update({'parent':block_name})
+                    graph.add_node(value_name, parent=block_name, **value_attrs)
 
         if 'calls' in props:
             calls = props['calls']
