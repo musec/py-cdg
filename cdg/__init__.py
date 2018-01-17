@@ -17,7 +17,7 @@ import networkx
 
 
 class EdgeKind:
-    Call, Flow = range(2)
+    Call, Operand, Memory, Meta = range(4)
 
 
 def create(name):
@@ -69,8 +69,19 @@ def load(stream, filename):
         if 'flows' in props:
             flows = props['flows']
             if flows:
-                for source in flows:
-                    graph.add_edge(source, name, kind = EdgeKind.Flow)
+                for flow in flows:
+                    source = flow['from']
+                    dest = flow['to']
+                    k = flow['kind']
+
+                    if k == 'memory':
+                        kind = EdgeKind.Memory
+                    elif k == 'meta':
+                        kind = EdgeKind.Meta
+                    elif k == 'operand':
+                        kind = EdgeKind.Operand
+
+                    graph.add_edge(source, dest, kind=kind)
 
     return graph
 

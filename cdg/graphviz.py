@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cdg
+import collections
 import networkx
 
 class Colour:
@@ -25,6 +26,26 @@ class Colour:
 
 def dot(graph, output):
     pretty = graph.full_copy()
+
+    functions = collections.defaultdict(dict)
+
+    for (src,dest,attrs) in pretty.edges(data = True):
+        kind = attrs['kind']
+
+        if kind == cdg.EdgeKind.Call:
+            attrs['color'] = '#ff66ff99'
+
+        elif kind == cdg.EdgeKind.Memory:
+            attrs['color'] = '#ff666699'
+
+        elif kind == cdg.EdgeKind.Meta:
+            attrs['color'] = '#ff6666ff'
+
+        elif kind == cdg.EdgeKind.Operand:
+            attrs['color'] = '#66666633'
+
+        else:
+            assert False    # invalid EdgeKind
 
     for (node, attrs) in pretty.nodes(data = True):
         callend = attrs['call'] if 'call' in attrs else None
@@ -71,18 +92,6 @@ def dot(graph, output):
         elif source or root:
             attrs['shape'] = 'doublecircle'
 
-
-    for (src,dest,attrs) in pretty.edges(data = True):
-        kind = attrs['kind']
-
-        if kind == cdg.EdgeKind.Call:
-            attrs['color'] = '#66666699'
-
-        elif kind == cdg.EdgeKind.Flow:
-            attrs['color'] = '#ff666699'
-
-        else:
-            assert False    # invalid EdgeKind
 
     agraph = networkx.drawing.nx_agraph.to_agraph(pretty)
     agraph.node_attr['shape'] = 'rectangle'
