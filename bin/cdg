@@ -86,7 +86,7 @@ elif args['filter']:
             sys.exit(1)
 
     print('Saving filtered graph: %d nodes, %d edges' % graph.dimensions())
-    graph.save(open(outfile_name, 'wb'))
+    graph.save(open(outfile_name, 'wb'), outfile_name)
 
 elif args['simplify']:
     simplified = graph.simplified()

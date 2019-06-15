@@ -84,9 +84,11 @@ def load(stream, filename):
             graph.node[fn_name].update(props['attributes'])
 
         if 'arguments' in props:
-            for (name, attrs) in props['arguments'].items():
-                graph.add_node(name, parent=fn_name, **attrs)
-                graph.nodes[fn_name]['children'].add(name)
+            arguments = props['arguments']
+            if arguments:
+                for (name, attrs) in props['arguments'].items():
+                    graph.add_node(name, parent=fn_name, **attrs)
+                    graph.nodes[fn_name]['children'].add(name)
 
         if 'blocks' in props:
             for (block_name, values) in props['blocks'].items():
@@ -158,7 +160,7 @@ def new_empty_function():
     }
 
 
-def save(graph, output):
+def save(graph, output, filename):
     nodes = graph.nodes
     roots = ( (k,v) for (k,v) in graph.nodes.items() if 'parent' not in v )
 
@@ -171,7 +173,9 @@ def save(graph, output):
 
         # Blocks have children; anything else must be an argument.
         child_names = set(fn_attrs['children'])
-        blocks = { n for n in child_names if 'children' in nodes[n] }
+        blocks = {
+            n for n in child_names if n in nodes #and 'children' in nodes[n]
+        }
         args = child_names.difference(blocks)
 
         for block_name in blocks:
@@ -190,6 +194,9 @@ def save(graph, output):
                 block[child_name] = child_attrs
 
         for arg_name in args:
+            #if arg_name not in nodes:
+            #    continue
+
             arg_attrs = nodes[arg_name]
             arg_attrs.pop('parent')
             assert 'children' not in arg_attrs
@@ -199,6 +206,9 @@ def save(graph, output):
         functions[fn_name] = fn
 
     for (src, dest, data) in graph.edges(data=True):
+        #if src not in nodes or dest not in nodes:
+        #    continue
+
         (fn_name, src_name) = src.split('::', 1)
         kind = data['kind']
 
@@ -212,6 +222,25 @@ def save(graph, output):
             functions[fn_name]['calls'].append(data)
         else:
             functions[fn_name]['flows'].append(data)
+
+    if filename.endswith('.cdg'):
+        import ubjson
+        cg = ubjson.load(stream)
+
+    elif filename.endswith('.json'):
+        import json
+        cg = json.load(stream)
+
+    elif filename.endswith('.yaml'):
+        import yaml
+
+        try:
+            from yaml import CLoader as Loader
+        except ImportError:
+            from yaml import Loader
+
+        cg = yaml.load(stream, Loader=Loader)
+
 
     import ubjson
     ubjson.dump({'functions': functions}, output)
